@@ -4,6 +4,7 @@ const router = express.Router();
 const auth = require("../../middleware/auth")
 const Profile = require("../../models/Profile")
 const User = require("../../models/User")
+const { check , validationResult } = require("express-validator")
 //get a single profile
 router.get("/me", auth ,async (req, res) => {
 
@@ -25,5 +26,19 @@ try {
 
 
 });
+
+//create or update a user profile
+
+router.post("/" , [auth , 
+    check("status", "Status is Required").not().isEmpty(),
+    check("skills", "Skills is Required").not().isEmpty()
+
+
+] , async (req,res) =>{
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+})
 
 module.exports = router;
